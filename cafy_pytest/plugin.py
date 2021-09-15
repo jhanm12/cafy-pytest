@@ -1525,18 +1525,34 @@ class EmailReport(object):
                     copyfile(_junitxml_filename, junitxml_file_path)
                     os.chmod(junitxml_file_path, 0o775)
 
-        terminalreporter.write_line("\n TestCase Summary Status Table")
-        temp_list = []
-        for k,v in self.testcase_dict.items():
-            try:
-                message = v.message.chain[0][1].message
-            except:
-                message = v.message
-            temp_list.append((v.name, v.status))
-        headers = ['Testcase_name', 'Status']
-        self.tabulate_result = tabulate(temp_list, headers=headers[:], tablefmt='grid')
+        mode=CafyLog.hybrid_mode_dict['mode']
+        if(str(mode)=='True'):
+           terminalreporter.write_line("\n TestCase Summary Status Table")
+           hybrid_mode_test_list = []
+           hybrid_mode_dict=CafyLog.hybrid_mode_dict['status']
+           mode_status=""
+           for k,v in self.testcase_dict.items():
+               if v.name in hybrid_mode_dict.keys():
+                  mode_status=hybrid_mode_dict[v.name]
+               hybrid_mode_test_list.append([v.name, v.status,mode_status])
+           headers = ['Testcase_name', 'Status','hybrid_mode Status']
+           self.tabulate_result = tabulate(hybrid_mode_test_list, headers=headers[:], tablefmt='grid')
+           terminalreporter.write_line(self.tabulate_result)
 
-        terminalreporter.write_line(self.tabulate_result)
+        else:
+           terminalreporter.write_line("\n TestCase Summary Status Table")
+           temp_list = []
+
+           for k,v in self.testcase_dict.items():
+               try:
+                   message = v.message.chain[0][1].message
+               except:
+                   message = v.message
+               temp_list.append((v.name, v.status))
+           headers = ['Testcase_name', 'Status']
+           self.tabulate_result = tabulate(temp_list, headers=headers[:], tablefmt='grid')
+           terminalreporter.write_line(self.tabulate_result)
+
         terminalreporter.write_line("Results: {work_dir}".format(work_dir=CafyLog.work_dir))
         terminalreporter.write_line("Reports: {allure_html_report}".format(allure_html_report=self.allure_html_report))
 
