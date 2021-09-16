@@ -1535,7 +1535,7 @@ class EmailReport(object):
                if v.name in hybrid_mode_dict.keys():
                   mode_status=hybrid_mode_dict[v.name]
                hybrid_mode_test_list.append([v.name, v.status,mode_status])
-           headers = ['Testcase_name', 'Status','hybrid_mode Status']
+           headers = ['Testcase_name', 'Status','Testcase_mode']
            self.tabulate_result = tabulate(hybrid_mode_test_list, headers=headers[:], tablefmt='grid')
            terminalreporter.write_line(self.tabulate_result)
 
